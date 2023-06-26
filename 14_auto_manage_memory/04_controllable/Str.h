@@ -5,6 +5,7 @@
 #include <iostream>
 #include "vec.h"
 #include "Ptr.h"
+// #include "Ptr_no_refcnt.h"
 
 template <>
 Vec<char> *clone(const Vec<char> *vp)
