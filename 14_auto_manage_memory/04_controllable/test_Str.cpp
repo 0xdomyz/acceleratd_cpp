@@ -14,8 +14,8 @@ int main(void)
     s2 = s3;
     s2[0] = 'H';
 
-    cout << s2 << endl;
-    cout << s3 << endl;
+    cout << "Expected: Hello! aaahel, actual: " << s2 << endl;
+    cout << "Expected: hello! aaahel, actual: " << s3 << endl;
 
     return 0;
 }
