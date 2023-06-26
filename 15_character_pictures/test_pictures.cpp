@@ -50,5 +50,14 @@ int main()
     cout << framed_v_cated << endl;
     cout << endl;
 
+    // another test
+    {
+        Picture p = vector<string>{"Hello", "World", "!"};
+        Picture q = frame(p);
+        Picture r = hcat(p, q);
+        Picture s = vcat(q, r);
+        cout << frame(hcat(s, vcat(r, q))) << endl;
+    }
+
     return 0;
 }
