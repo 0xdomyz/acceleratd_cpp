@@ -2,7 +2,6 @@
 #define GUARD_PTR_H
 
 #include <stdexcept>
-#include "RefCounter.h"
 
 template <class T>
 T *clone(const T *tp)
@@ -14,6 +13,7 @@ template <class T>
 class Ptr
 {
 public:
+    // new member to copy the object conditionally when needed
     void make_unique()
     {
         if (*refptr != 1)
@@ -24,11 +24,12 @@ public:
         }
     }
 
-    Ptr() : p(0) {}
-    Ptr(T *t) : p(t) {}
-    Ptr(const Ptr &h) : refcnt(h.refcnt), p(h.p) {}
-    Ptr &operator=(const Ptr &);
-    ~Ptr();
+    // the rest of the class looks like Ptr except for its name
+    Ptr() : refptr(new size_t(1)), p(0) {}
+    Ptr(T *t) : refptr(new size_t(1)), p(t) {}
+    Ptr(const Ptr &h) : refptr(h.refptr), p(h.p) { ++*refptr; }
+    Ptr &operator=(const Ptr &); // implemented analogously to §14.2/261
+    ~Ptr();                      // implemented analogously to §14.2/262
 
     operator bool() const { return p; }
 
@@ -38,39 +39,40 @@ public:
             return *p;
         throw std::runtime_error("unbound Ptr");
     };
-
+    // implemented analogously to §14.2/261
     T *operator->() const
     {
         if (p)
             return p;
         throw std::runtime_error("unbound Ptr");
-    };
-
+    }; // implemented analogously to §14.2/261
 private:
     T *p;
-    RefCounter refcnt;
+    size_t *refptr;
 };
 
 template <class T>
 Ptr<T> &Ptr<T>::operator=(const Ptr &rhs)
 {
-    if (this != &rhs)
+    ++*rhs.refptr;
+    // free the left-hand side, destroying pointers if appropriate
+    if (--*refptr == 0)
     {
-        if (refcnt.last())
-        {
-            delete p;
-        }
-        refcnt = rhs.refcnt;
-        p = rhs.p;
+        delete refptr;
+        delete p;
     }
+    // copy in values from the right-hand side
+    refptr = rhs.refptr;
+    p = rhs.p;
     return *this;
 }
 
 template <class T>
 Ptr<T>::~Ptr()
 {
-    if (refcnt.last())
+    if (--*refptr == 0)
     {
+        delete refptr;
         delete p;
     }
 }
