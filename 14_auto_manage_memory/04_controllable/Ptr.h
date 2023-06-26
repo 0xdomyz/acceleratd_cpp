@@ -2,6 +2,7 @@
 #define GUARD_PTR_H
 
 #include <stdexcept>
+#include "RefCounter.h"
 
 template <class T>
 T *clone(const T *tp)
@@ -13,23 +14,20 @@ template <class T>
 class Ptr
 {
 public:
-    // new member to copy the object conditionally when needed
     void make_unique()
     {
-        if (*refptr != 1)
+        if (!refcnt.last())
         {
-            --*refptr;
-            refptr = new size_t(1);
+            refcnt = RefCounter();
             p = p ? clone(p) : 0;
         }
     }
 
-    // the rest of the class looks like Ptr except for its name
-    Ptr() : refptr(new size_t(1)), p(0) {}
-    Ptr(T *t) : refptr(new size_t(1)), p(t) {}
-    Ptr(const Ptr &h) : refptr(h.refptr), p(h.p) { ++*refptr; }
-    Ptr &operator=(const Ptr &); // implemented analogously to §14.2/261
-    ~Ptr();                      // implemented analogously to §14.2/262
+    Ptr() : p(0) {}
+    Ptr(T *t) : p(t) {}
+    Ptr(const Ptr &h) : refcnt(h.refcnt), p(h.p) {}
+    Ptr &operator=(const Ptr &);
+    ~Ptr();
 
     operator bool() const { return p; }
 
@@ -39,40 +37,39 @@ public:
             return *p;
         throw std::runtime_error("unbound Ptr");
     };
-    // implemented analogously to §14.2/261
+
     T *operator->() const
     {
         if (p)
             return p;
         throw std::runtime_error("unbound Ptr");
-    }; // implemented analogously to §14.2/261
+    };
+
 private:
     T *p;
-    size_t *refptr;
+    RefCounter refcnt;
 };
 
 template <class T>
 Ptr<T> &Ptr<T>::operator=(const Ptr &rhs)
 {
-    ++*rhs.refptr;
-    // free the left-hand side, destroying pointers if appropriate
-    if (--*refptr == 0)
+    if (this != &rhs)
     {
-        delete refptr;
-        delete p;
+        if (refcnt.last())
+        {
+            delete p;
+        }
+        refcnt = rhs.refcnt;
+        p = rhs.p;
     }
-    // copy in values from the right-hand side
-    refptr = rhs.refptr;
-    p = rhs.p;
     return *this;
 }
 
 template <class T>
 Ptr<T>::~Ptr()
 {
-    if (--*refptr == 0)
+    if (refcnt.last())
     {
-        delete refptr;
         delete p;
     }
 }
