@@ -43,9 +43,12 @@ class String_Pic : public Pic_base
 class Frame_Pic : public Pic_base
 {
     friend Picture frame(const Picture &);
+    friend Picture frame(const Picture &, const char &, const char &, const char &);
 
     Ptr<Pic_base> p;
-    Frame_Pic(const Ptr<Pic_base> &pic) : p(pic) {}
+    char corner, side, top_bottom;
+    Frame_Pic(const Ptr<Pic_base> &pic) : p(pic), corner('*'), side('|'), top_bottom('-') {}
+    Frame_Pic(const Ptr<Pic_base> &pic, const char &cor, const char &side, const char &top) : p(pic), corner(cor), side(side), top_bottom(top) {}
 
     wd_sz width() const { return p->width() + 4; }
     ht_sz height() const { return p->height() + 4; }
@@ -90,6 +93,7 @@ class Picture
 {
     friend std::ostream &operator<<(std::ostream &, const Picture &);
     friend Picture frame(const Picture &);
+    friend Picture frame(const Picture &, const char &, const char &, const char &);
     friend Picture hcat(const Picture &, const Picture &);
     friend Picture vcat(const Picture &, const Picture &);
 
@@ -103,6 +107,7 @@ private:
 
 // nonmember functions
 Picture frame(const Picture &pic);
+Picture frame(const Picture &pic, const char &, const char &, const char &);
 Picture hcat(const Picture &, const Picture &);
 Picture vcat(const Picture &, const Picture &);
 

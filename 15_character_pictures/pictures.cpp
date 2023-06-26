@@ -10,6 +10,11 @@ Picture frame(const Picture &pic)
     return new Frame_Pic(pic.p);
 }
 
+Picture frame(const Picture &pic, const char &cor, const char &side, const char &top)
+{
+    return new Frame_Pic(pic.p, cor, side, top);
+}
+
 Picture hcat(const Picture &l, const Picture &r)
 {
     return new HCat_Pic(l.p, r.p);
@@ -109,21 +114,23 @@ void Frame_Pic::display(ostream &os, ht_sz row, bool do_pad) const
         if (row == 0 || row == height() - 1)
         {
             // top or bottom row
-            os << string(width(), '*');
+            os << corner;
+            os << string(width() - 2, top_bottom);
+            os << corner;
         }
         else if (row == 1 || row == height() - 2)
         {
             // second from top or bottom row
-            os << "*";
+            os << side;
             pad(os, 1, width() - 1);
-            os << "*";
+            os << side;
         }
         else
         {
             // interior row
-            os << "* ";
+            os << side << " ";
             p->display(os, row - 2, true);
-            os << " *";
+            os << " " << side;
         }
     }
 }
