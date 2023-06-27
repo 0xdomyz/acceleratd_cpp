@@ -1,20 +1,20 @@
-// g++ test_pictures.cpp pictures.cpp -o test_pictures && ./test_pictures
+// g++ test_pictures.cpp pictures.cpp Str.cpp -o test_pictures && ./test_pictures
 
-#include "pictures.h"
 #include <iostream>
-#include <string>
-#include <vector>
+#include "Str.h"
+#include "vec.h"
+#include "pictures.h"
 
 using namespace std;
 
 int main()
 {
-    vector<string> vs;
+    Vec<Str> vs;
     vs.push_back("Hello");
     vs.push_back("World");
     vs.push_back("!");
 
-    // conversion from vector<string> to Picture
+    // conversion from Vec<string> to Picture
     Picture p = vs;
     cout << "p:" << endl;
     cout << p << endl;
@@ -55,7 +55,6 @@ int main()
         cout << "another test:" << endl;
         cout << endl;
 
-        Picture p = vector<string>{"Hello", "World", "!"};
         Picture q = frame(p, '+', '!', '=');
         cout << q << endl;
 

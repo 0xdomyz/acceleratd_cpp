@@ -2,8 +2,8 @@
 #define GUARD_PICTURES_H
 
 #include "Ptr.h"
-#include <string>
-#include <vector>
+#include "vec.h"
+#include "Str.h"
 
 class Picture;
 
@@ -18,8 +18,8 @@ class Pic_base
     friend Picture reframe(const Picture &, const char &, const char &, const char &);
 
     // no public interface
-    typedef std::vector<std::string>::size_type ht_sz;
-    typedef std::string::size_type wd_sz;
+    typedef Vec<Str>::size_type ht_sz;
+    typedef Str::size_type wd_sz;
 
     virtual wd_sz width() const = 0;
     virtual ht_sz height() const = 0;
@@ -34,8 +34,8 @@ class String_Pic : public Pic_base
 {
     friend class Picture;
 
-    std::vector<std::string> data;
-    String_Pic(const std::vector<std::string> &v) : data(v) {}
+    Vec<Str> data;
+    String_Pic(const Vec<Str> &v) : data(v) {}
 
     wd_sz width() const;
     ht_sz height() const { return data.size(); }
@@ -120,7 +120,7 @@ class Picture
     friend Picture reframe(const Picture &, const char &, const char &, const char &);
 
 public:
-    Picture(const std::vector<std::string> & = std::vector<std::string>());
+    Picture(const Vec<Str> & = Vec<Str>());
 
 private:
     Picture(Pic_base *ptr) : p(ptr){};

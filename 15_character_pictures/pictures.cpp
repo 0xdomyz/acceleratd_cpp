@@ -32,7 +32,7 @@ Picture reframe(const Picture &pic, const char &corner_c, const char &sides_c, c
     return p;
 }
 
-Picture::Picture(const vector<string> &v) : p(new String_Pic(v)) {}
+Picture::Picture(const Vec<Str> &v) : p(new String_Pic(v)) {}
 
 ostream &operator<<(ostream &os, const Picture &picture)
 {
