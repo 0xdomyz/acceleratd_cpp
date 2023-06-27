@@ -24,7 +24,7 @@ class Pic_base
     virtual wd_sz width() const = 0;
     virtual ht_sz height() const = 0;
     virtual void display(std::ostream &, ht_sz, bool) const = 0;
-    virtual void reframe(const char &, const char &, const char &) = 0;
+    virtual void reframe_p(const char &, const char &, const char &) = 0;
 
 protected:
     static void pad(std::ostream &os, wd_sz beg, wd_sz end);
@@ -40,7 +40,7 @@ class String_Pic : public Pic_base
     wd_sz width() const;
     ht_sz height() const { return data.size(); }
     void display(std::ostream &, ht_sz, bool) const;
-    void reframe(const char &corner_c, const char &sides_c, const char &top_bot_c){};
+    void reframe_p(const char &corner_c, const char &sides_c, const char &top_bot_c){};
 };
 
 class Frame_Pic : public Pic_base
@@ -52,13 +52,13 @@ class Frame_Pic : public Pic_base
     char corner, sides, top_bottom;
     Frame_Pic(const Ptr<Pic_base> &pic) : p(pic), corner('*'), sides('|'), top_bottom('-') {}
     Frame_Pic(const Ptr<Pic_base> &pic, const char &cor, const char &side, const char &top) : p(pic), corner(cor), sides(side), top_bottom(top) {}
-    void reframe(const char &corner_c, const char &sides_c, const char &top_bot_c)
+    void reframe_p(const char &corner_c, const char &sides_c, const char &top_bot_c)
     {
         corner = corner_c;
         sides = sides_c;
         top_bottom = top_bot_c;
 
-        p->reframe(corner_c, sides_c, top_bot_c);
+        p->reframe_p(corner_c, sides_c, top_bot_c);
     }
 
     wd_sz width() const { return p->width() + 4; }
@@ -72,10 +72,10 @@ class VCat_Pic : public Pic_base
 
     Ptr<Pic_base> top, bottom;
     VCat_Pic(const Ptr<Pic_base> &t, const Ptr<Pic_base> &b) : top(t), bottom(b) {}
-    void reframe(const char &corner_c, const char &sides_c, const char &top_bot_c)
+    void reframe_p(const char &corner_c, const char &sides_c, const char &top_bot_c)
     {
-        top->reframe(corner_c, sides_c, top_bot_c);
-        bottom->reframe(corner_c, sides_c, top_bot_c);
+        top->reframe_p(corner_c, sides_c, top_bot_c);
+        bottom->reframe_p(corner_c, sides_c, top_bot_c);
     };
 
     wd_sz width() const
@@ -95,10 +95,10 @@ class HCat_Pic : public Pic_base
 
     Ptr<Pic_base> left, right;
     HCat_Pic(const Ptr<Pic_base> &l, const Ptr<Pic_base> &r) : left(l), right(r) {}
-    void reframe(const char &corner_c, const char &sides_c, const char &top_bot_c)
+    void reframe_p(const char &corner_c, const char &sides_c, const char &top_bot_c)
     {
-        left->reframe(corner_c, sides_c, top_bot_c);
-        right->reframe(corner_c, sides_c, top_bot_c);
+        left->reframe_p(corner_c, sides_c, top_bot_c);
+        right->reframe_p(corner_c, sides_c, top_bot_c);
     };
 
     wd_sz width() const { return left->width() + right->width(); }
@@ -132,7 +132,7 @@ Picture frame(const Picture &pic);
 Picture frame(const Picture &pic, const char &, const char &, const char &);
 Picture hcat(const Picture &, const Picture &);
 Picture vcat(const Picture &, const Picture &);
-Picture reframe(const Picture &, const char &, const char &, const char &);
+Picture reframe(const Picture &pic, const char &corner_c, const char &sides_c, const char &top_bot_c);
 
 // overloaded output operator
 std::ostream &operator<<(std::ostream &, const Picture &);

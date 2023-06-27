@@ -75,5 +75,14 @@ int main()
         cout << reframe_framed_v_cated << endl;
     }
 
+    {
+        // hcat centre
+        cout << p << endl;
+        cout << vcat(p, p) << endl;
+        cout << hcat(p, p) << endl;
+        cout << hcat(p, vcat(p, p)) << endl;
+        cout << hcat(vcat(p, p), p) << endl;
+    }
+
     return 0;
 }

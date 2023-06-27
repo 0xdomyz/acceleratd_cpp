@@ -28,7 +28,7 @@ Picture vcat(const Picture &t, const Picture &b)
 Picture reframe(const Picture &pic, const char &corner_c, const char &sides_c, const char &top_bot_c)
 {
     Picture p = pic;
-    p.p->reframe(corner_c, sides_c, top_bot_c);
+    p.p->reframe_p(corner_c, sides_c, top_bot_c);
     return p;
 }
 
@@ -103,8 +103,49 @@ void VCat_Pic::display(ostream &os, ht_sz row, bool do_pad) const
 // hcat_pic
 void HCat_Pic::display(ostream &os, ht_sz row, bool do_pad) const
 {
-    left->display(os, row, do_pad || row < right->height());
-    right->display(os, row, do_pad);
+    ht_sz left_h = left->height();
+    ht_sz right_h = right->height();
+    ht_sz less = min(left_h, right_h);
+    ht_sz half_of_diff = (max(left_h, right_h) - less) / 2;
+
+    if (left_h <= right_h)
+    {
+        if (row < half_of_diff)
+        {
+            pad(os, 0, left->width());
+            right->display(os, row, do_pad);
+        }
+        else if (row < half_of_diff + less)
+        {
+            left->display(os, row - half_of_diff, 1);
+            right->display(os, row, do_pad);
+        }
+        else
+        {
+            pad(os, 0, left->width());
+            right->display(os, row, do_pad);
+        }
+    }
+    else
+    {
+        if (row < half_of_diff)
+        {
+            left->display(os, row, do_pad);
+            if (do_pad)
+                pad(os, 0, right->width());
+        }
+        else if (row < half_of_diff + less)
+        {
+            left->display(os, row, 1);
+            right->display(os, row - half_of_diff, do_pad);
+        }
+        else
+        {
+            left->display(os, row, do_pad);
+            if (do_pad)
+                pad(os, 0, right->width());
+        }
+    }
 }
 
 // frame_pic
