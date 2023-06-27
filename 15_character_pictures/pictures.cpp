@@ -25,6 +25,13 @@ Picture vcat(const Picture &t, const Picture &b)
     return new VCat_Pic(t.p, b.p);
 }
 
+Picture reframe(const Picture &pic, const char &corner_c, const char &sides_c, const char &top_bot_c)
+{
+    Picture p = pic;
+    p.p->reframe(corner_c, sides_c, top_bot_c);
+    return p;
+}
+
 Picture::Picture(const vector<string> &v) : p(new String_Pic(v)) {}
 
 ostream &operator<<(ostream &os, const Picture &picture)
@@ -121,16 +128,16 @@ void Frame_Pic::display(ostream &os, ht_sz row, bool do_pad) const
         else if (row == 1 || row == height() - 2)
         {
             // second from top or bottom row
-            os << side;
+            os << sides;
             pad(os, 1, width() - 1);
-            os << side;
+            os << sides;
         }
         else
         {
             // interior row
-            os << side << " ";
+            os << sides << " ";
             p->display(os, row - 2, true);
-            os << " " << side;
+            os << " " << sides;
         }
     }
 }

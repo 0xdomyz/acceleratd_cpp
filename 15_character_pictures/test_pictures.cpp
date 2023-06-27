@@ -64,5 +64,16 @@ int main()
         cout << frame(hcat(s, vcat(r, q))) << endl;
     }
 
+    {
+        // reframe
+        cout << "reframe:" << endl;
+        cout << endl;
+
+        cout << framed_v_cated << endl;
+
+        Picture reframe_framed_v_cated = reframe(framed_v_cated, '+', '!', '=');
+        cout << reframe_framed_v_cated << endl;
+    }
+
     return 0;
 }
