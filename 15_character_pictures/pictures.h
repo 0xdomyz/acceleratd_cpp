@@ -26,6 +26,10 @@ class Pic_base
     virtual void display(std::ostream &, ht_sz, bool) const = 0;
     virtual void reframe_p(const char &, const char &, const char &) = 0;
 
+public:
+    // virtual ~Pic_base() { std::cout << "Pic_base destructor" << std::endl; }
+    // ~Pic_base() { std::cout << "Pic_base destructor" << std::endl; }
+
 protected:
     static void pad(std::ostream &os, wd_sz beg, wd_sz end);
 };
